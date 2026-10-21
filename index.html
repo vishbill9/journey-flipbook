@@ -1,0 +1,114 @@
+<title>Journey Flipbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one dark reading stage, book centred, slim control bar below, section chips drawer on the left. */
+:root{
+  --stage:#0f1b2d;      /* deep ink blue */
+  --stage-2:#16263d;
+  --paper:#ffffff;
+  --ink:#e8eef6;
+  --muted:#9fb1c6;
+  --teal:#3493b9;
+  --gold:#f2c94c;
+  --line:#2a3f5c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--stage);color:var(--ink);font:14px/1.4 "Source Sans 3",system-ui,sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;min-height:100%}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-block:14px 8px;flex-wrap:wrap}
+h1{margin:0;font:700 22px/1.1 "Fraunces",Georgia,serif;letter-spacing:.02em;color:#fff}
+h1 span{color:var(--gold)}
+.sub{color:var(--muted);font-size:13px}
+main{flex:1;display:flex;gap:16px;min-height:0;padding-bottom:10px}
+nav{width:210px;flex:none;overflow:auto;border-right:1px solid var(--line);padding-right:12px;max-height:calc(100vh - 150px)}
+nav h2{margin:4px 0 8px;font:600 11px/1 "Source Sans 3",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+nav button{display:flex;width:100%;justify-content:space-between;gap:8px;align-items:baseline;text-align:left;background:none;border:0;color:var(--ink);padding:7px 8px;border-radius:6px;cursor:pointer;font:inherit}
+nav button:hover,nav button.on{background:var(--stage-2)}
+nav button b{font-weight:600}
+nav button i{font-style:normal;color:var(--gold);font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap}
+.book-wrap{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+#book{width:100%;flex:1;min-height:420px;display:flex;align-items:center;justify-content:center}
+.stf__parent{margin:0 auto}
+.page{background:var(--paper);overflow:hidden}
+.page img{width:100%;height:100%;display:block;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding-bottom:max(6px,env(safe-area-inset-bottom,0px))}
+.bar button{background:var(--stage-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 14px;font:inherit;cursor:pointer}
+.bar button:hover{border-color:var(--teal)}
+.bar button:focus-visible,nav button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.count{min-width:130px;text-align:center;font-variant-numeric:tabular-nums;color:var(--muted)}
+.count b{color:#fff}
+.hint{color:var(--muted);font-size:12px}
+.loading{color:var(--muted);position:absolute}
+@media (max-width:760px){
+  main{flex-direction:column}
+  nav{width:100%;max-height:none;border-right:0;border-bottom:1px solid var(--line);padding:0 0 8px;display:flex;gap:6px;overflow-x:auto}
+  nav h2{display:none}
+  nav button{width:auto;flex:none;border:1px solid var(--line)}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<header>
+  <h1>Journey <span>·</span> July – September 2026</h1>
+  <div class="sub">Department of Applied Sciences · CUIET · Chitkara University, Punjab</div>
+</header>
+<main>
+  <nav id="nav" aria-label="Sections"><h2>Jump to</h2></nav>
+  <div class="book-wrap">
+    <div id="book" aria-live="polite"><span class="loading" id="loading">Opening the book…</span></div>
+    <div class="bar">
+      <button id="first" aria-label="Cover">Cover</button>
+      <button id="prev" aria-label="Previous page">&larr; Previous</button>
+      <div class="count" id="count">Cover</div>
+      <button id="next" aria-label="Next page">Next &rarr;</button>
+      <button id="last" aria-label="Back cover">Back</button>
+    </div>
+    <div class="hint">Drag a page corner, click a page edge, or use the arrow keys.</div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script>
+(function(){
+  var N=68, pages=[];
+  for(var i=1;i<=N;i++){pages.push('pages/p'+(i<10?'0':'')+i+'.jpg');}
+  var stops=[["Cover",0,"1"],["Index",2,"2"],["Dean’s Message",3,"3"],["Chancellor Connect Series",4,"4–10"],["Rudiments of AI",11,"11"],["Promotions",12,"12"],["Student Achievement",13,"13"],["Retirement",14,"14"],["Classes Held",15,"15–18"],["Events at a Glance",19,"19"],["Event Reports",20,"20–25"],["Research Publications",26,"26–31"],["Patents",32,"32–41"],["Faculty Achievements",42,"42–63"],["Celebrations",64,"64"],["Articles by Faculty",65,"65–66"]];
+  stops[0][2]="";
+  var nav=document.getElementById('nav');
+  stops.forEach(function(s){var b=document.createElement('button');b.type='button';b.dataset.p=s[1];b.innerHTML='<b>'+s[0]+'</b><i>'+(s[2]?'p. '+s[2]:'')+'</i>';nav.appendChild(b);});
+  var book=document.getElementById('book'), count=document.getElementById('count');
+  function size(){var h=Math.max(420,window.innerHeight-170);return h;}
+  var h=size(), w=Math.round(h*850/1100);
+  var pf=new St.PageFlip(book,{width:850,height:1100,size:'stretch',minWidth:260,maxWidth:850,minHeight:340,maxHeight:1100,showCover:true,maxShadowOpacity:.45,mobileScrollSupport:false,flippingTime:700,usePortrait:true});
+  var wrap=document.createElement('div');
+  // build html pages so object-fit works
+  var els=pages.map(function(u,i){var d=document.createElement('div');d.className='page';if(i===0||i===N-1)d.dataset.density='hard';var im=document.createElement('img');im.src=u;im.alt='Page '+(i+1);im.draggable=false;d.appendChild(im);return d;});
+  document.getElementById('loading').remove();
+  pf.loadFromHTML(els);
+  function label(i){
+    if(i===0)return 'Cover';
+    if(i===N-1)return 'Back cover';
+    if(i===1)return 'Front page';
+    var spread=pf.getOrientation()==='portrait'?String(i):(i%2===0?(i)+'–'+(i+1):(i-1)+'–'+i);
+    return '<b>Page '+(i)+'</b> of '+(N-2);
+  }
+  function upd(i){
+    var p=i; // printed number = index
+    var txt=(i===0)?'Cover':(i===N-1)?'Back cover':(i===1)?'Front page':'<b>Page '+i+'</b> of '+(N-2);
+    count.innerHTML=txt;
+    var on=null;stops.forEach(function(s){if(s[1]<=i)on=s[1];});
+    nav.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',+b.dataset.p===on);});
+  }
+  pf.on('flip',function(e){upd(e.data);});
+  upd(0);
+  document.getElementById('prev').onclick=function(){pf.flipPrev();};
+  document.getElementById('next').onclick=function(){pf.flipNext();};
+  document.getElementById('first').onclick=function(){pf.flip(0);};
+  document.getElementById('last').onclick=function(){pf.flip(N-1);};
+  nav.addEventListener('click',function(e){var b=e.target.closest('button');if(b)pf.flip(+b.dataset.p);});
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')pf.flipNext();if(e.key==='ArrowLeft')pf.flipPrev();});
+})();
+</script>
