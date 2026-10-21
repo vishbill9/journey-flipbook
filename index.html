@@ -75,7 +75,7 @@ nav button i{font-style:normal;color:var(--gold);font-variant-numeric:tabular-nu
 (function(){
   var N=68, pages=[];
   for(var i=1;i<=N;i++){pages.push('pages/p'+(i<10?'0':'')+i+'.jpg');}
-  var stops=[["Cover",0,"1"],["Index",2,"2"],["Dean’s Message",3,"3"],["Chancellor Connect Series",4,"4–10"],["Rudiments of AI",11,"11"],["Promotions",12,"12"],["Student Achievement",13,"13"],["Retirement",14,"14"],["Classes Held",15,"15–18"],["Events at a Glance",19,"19"],["Event Reports",20,"20–25"],["Research Publications",26,"26–31"],["Patents",32,"32–41"],["Faculty Achievements",42,"42–63"],["Celebrations",64,"64"],["Articles by Faculty",65,"65–66"]];
+  var stops=[["Cover",0,"1"],["Index",2,"2"],["Dean’s Message",3,"3"],["Chancellor Connect Series",4,"4–10"],["Rudiments of AI",11,"11"],["Promotions",12,"12"],["Student Achievement",13,"13"],["From Service to Serenity",14,"14"],["Classes Held",15,"15–18"],["Events at a Glance",19,"19"],["Event Reports",20,"20–25"],["Research Publications",26,"26–31"],["Patents",32,"32–41"],["Faculty Achievements",42,"42–63"],["Celebrations",64,"64"],["Articles by Faculty",65,"65–66"]];
   stops[0][2]="";
   var nav=document.getElementById('nav');
   stops.forEach(function(s){var b=document.createElement('button');b.type='button';b.dataset.p=s[1];b.innerHTML='<b>'+s[0]+'</b><i>'+(s[2]?'p. '+s[2]:'')+'</i>';nav.appendChild(b);});
